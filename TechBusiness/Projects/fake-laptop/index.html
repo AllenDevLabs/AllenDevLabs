@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LiteOS Desktop</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="desktop-shell">
+    <div class="boot-screen" id="bootScreen">
+      <h1>LiteOS</h1>
+      <p>Booting secure desktop environment...</p>
+      <button id="bootButton">Enter Desktop</button>
+    </div>
+    <div class="desktop" id="desktop" hidden>
+      <div class="window-grid">
+        <div class="app-icon" data-window="terminal">🖥️ Terminal</div>
+        <div class="app-icon" data-window="notes">📝 Notes</div>
+        <div class="app-icon" data-window="browser">🌐 Browser</div>
+      </div>
+      <div class="window" id="terminalWindow">
+        <div class="window-title">Terminal</div>
+        <div class="window-body">
+          <p>$ system status</p>
+          <p>CPU: 68%</p>
+          <p>RAM: 4.1 GB / 8 GB</p>
+          <p>Network: Connected</p>
+        </div>
+      </div>
+      <div class="window" id="notesWindow">
+        <div class="window-title">Notes</div>
+        <div class="window-body">
+          <p>Service queue:</p>
+          <ul>
+            <li>Repair customer laptop</li>
+            <li>Build Ubuntu image</li>
+            <li>Reset router</li>
+          </ul>
+        </div>
+      </div>
+      <div class="window" id="browserWindow">
+        <div class="window-title">Browser</div>
+        <div class="window-body">
+          <p>Visit the <a href="../index.html">Project Lab</a> for more demos.</p>
+        </div>
+      </div>
+      <div class="taskbar">
+        <div class="taskbar-left">LiteOS</div>
+        <div class="taskbar-right">08:00 AM</div>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

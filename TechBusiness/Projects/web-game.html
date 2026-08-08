@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interactive Diagnostics Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body { margin:0; font-family:'Inter', sans-serif; background:linear-gradient(135deg,#0a0d12,#141826); color:#f5f7fb; min-height:100vh; display:grid; place-items:center; padding:1rem; }
+    .demo-shell { width:min(92vw, 860px); background:#10131a; border:1px solid rgba(255,255,255,.12); border-radius:24px; padding:1.2rem; box-shadow:0 18px 45px rgba(0,0,0,.28); }
+    .header { display:flex; justify-content:space-between; align-items:start; flex-wrap:wrap; gap:1rem; margin-bottom:.85rem; }
+    h1 { font-family:'Manrope', sans-serif; margin:0 0 .3rem; }
+    p { color:#9aa3af; margin:0; line-height:1.6; }
+    canvas { width:100%; border-radius:16px; background:linear-gradient(180deg,#141826,#0d1118); border:1px solid rgba(197,58,47,.25); }
+    .hud { display:flex; justify-content:space-between; margin-bottom:.8rem; color:#e6ebf2; font-weight:600; }
+    button { background:linear-gradient(135deg,#c53a2f,#8d241e); color:white; border:none; border-radius:999px; padding:.7rem 1rem; font-weight:700; cursor:pointer; margin-top:.8rem; }
+  </style>
+</head>
+<body>
+  <div class="demo-shell">
+    <div class="header">
+      <div>
+        <h1>Interactive diagnostics demo</h1>
+        <p>A compact browser experience designed to demonstrate responsive front-end interaction and simple logic.</p>
+      </div>
+      <a href="index.html" style="color:#c53a2f; font-weight:600; text-decoration:none;">Back to portfolio</a>
+    </div>
+    <div class="hud">
+      <div>Score: <span id="score">0</span></div>
+      <div>Best: <span id="best">0</span></div>
+    </div>
+    <canvas id="game" width="780" height="360"></canvas>
+    <button onclick="restartGame()">Restart demo</button>
+  </div>
+  <script>
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+    const scoreEl = document.getElementById('score');
+    const bestEl = document.getElementById('best');
+    let score = 0;
+    let best = Number(localStorage.getItem('redline-best') || 0);
+    let running = true;
+    const player = { x: 360, y: 300, w: 44, h: 44, speed: 6 };
+    const obstacles = [];
+    const pickups = [];
+    const keys = {};
+    function restartGame() { score = 0; obstacles.length = 0; pickups.length = 0; player.x = 360; running = true; updateHud(); }
+    function updateHud() { scoreEl.textContent = score; bestEl.textContent = best; }
+    function spawnObstacle() { obstacles.push({ x: Math.random() * 720, y: -20, w: 30 + Math.random() * 36, h: 18 + Math.random() * 18, speed: 3 + Math.random() * 2 }); }
+    function spawnPickup() { pickups.push({ x: Math.random() * 720, y: -20, r: 8, speed: 2 + Math.random() * 2 }); }
+    window.addEventListener('keydown', (event) => { keys[event.key] = true; if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') event.preventDefault(); });
+    window.addEventListener('keyup', (event) => { keys[event.key] = false; });
+    function update() {
+      if (!running) return;
+      if (keys['ArrowLeft']) player.x -= player.speed;
+      if (keys['ArrowRight']) player.x += player.speed;
+      player.x = Math.max(0, Math.min(canvas.width - player.w, player.x));
+      if (Math.random() < 0.03) spawnObstacle();
+      if (Math.random() < 0.01) spawnPickup();
+      for (const obstacle of obstacles) { obstacle.y += obstacle.speed; if (obstacle.y > canvas.height) { const index = obstacles.indexOf(obstacle); obstacles.splice(index, 1); } }
+      for (const pickup of pickups) { pickup.y += pickup.speed; if (pickup.y > canvas.height) { const index = pickups.indexOf(pickup); pickups.splice(index, 1); } }
+      for (const obstacle of obstacles) { if (player.x < obstacle.x + obstacle.w && player.x + player.w > obstacle.x && player.y < obstacle.y + obstacle.h && player.y + player.h > obstacle.y) { running = false; best = Math.max(best, score); localStorage.setItem('redline-best', best); updateHud(); return; } }
+      for (const pickup of pickups) { if (player.x < pickup.x + pickup.r * 2 && player.x + player.w > pickup.x && player.y < pickup.y + pickup.r * 2 && player.y + player.h > pickup.y) { score += 1; const index = pickups.indexOf(pickup); pickups.splice(index, 1); updateHud(); } }
+    }
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#0b0f17';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#c53a2f';
+      ctx.fillRect(0, canvas.height - 24, canvas.width, 24);
+      ctx.fillStyle = '#f5f7fb';
+      ctx.fillRect(player.x, player.y, player.w, player.h);
+      for (const obstacle of obstacles) { ctx.fillStyle = '#e05d4b'; ctx.fillRect(obstacle.x, obstacle.y, obstacle.w, obstacle.h); }
+      for (const pickup of pickups) { ctx.fillStyle = '#f5c242'; ctx.beginPath(); ctx.arc(pickup.x + 8, pickup.y + 8, pickup.r, 0, Math.PI * 2); ctx.fill(); }
+      if (!running) { ctx.fillStyle = 'rgba(245,247,251,0.9)'; ctx.font = '24px Inter'; ctx.fillText('Session ended', 275, 170); }
+    }
+    function loop() { update(); draw(); if (running) { score += 0.01; updateHud(); } requestAnimationFrame(loop); }
+    updateHud(); restartGame(); loop();
+  </script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+:root { --bg:#080909; --panel:#141518; --accent:#ff2d2d; --text:#f6f2ed; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:'Share Tech Mono', monospace; background:radial-gradient(circle at top, #2b0b0b, #050505); color:var(--text); min-height:100vh; }
+.desktop-shell { min-height:100vh; display:grid; place-items:center; padding:1rem; }
+.boot-screen, .desktop { width:min(92vw, 900px); height:min(84vh, 620px); border-radius:24px; border:1px solid rgba(255,45,45,.3); box-shadow:0 0 30px rgba(255,45,45,.18); }
+.boot-screen { background:linear-gradient(135deg,#090909,#1d0808); display:grid; place-items:center; text-align:center; padding:2rem; }
+.boot-screen h1 { font-family:'Orbitron', sans-serif; font-size:3rem; color:#fff; margin-bottom:0; }
+.boot-screen button { margin-top:1rem; padding:.85rem 1.1rem; border:none; border-radius:999px; background:var(--accent); color:white; font-weight:700; cursor:pointer; }
+.desktop { background:linear-gradient(135deg,#101114,#2a1313); position:relative; overflow:hidden; }
+.window-grid { display:grid; grid-template-columns:repeat(3, 90px); gap:1rem; padding:1.2rem; }
+.app-icon { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.08); padding:.7rem; text-align:center; cursor:pointer; border-radius:12px; }
+.window { position:absolute; width:280px; background:rgba(0,0,0,.72); border:1px solid rgba(255,45,45,.28); border-radius:12px; display:none; }
+.window.active { display:block; }
+.window-title { background:linear-gradient(90deg,#ff2d2d,#7a1111); padding:.55rem .75rem; border-radius:12px 12px 0 0; font-family:'Orbitron', sans-serif; }
+.window-body { padding:.8rem; line-height:1.6; }
+#terminalWindow { top:90px; left:70px; }
+#notesWindow { top:140px; left:320px; }
+#browserWindow { top:210px; left:520px; }
+.taskbar { position:absolute; inset:auto 0 0 0; padding:.7rem 1rem; background:rgba(4,4,4,.9); display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,45,45,.22); }
