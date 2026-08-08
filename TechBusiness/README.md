@@ -19,4 +19,4 @@ Owner: Allen
 A curated collection of practical technical demos and implementation examples is available in the project showcase at /Projects/index.html.
 
 GitHub:
-https://github.com/allenjr
+[https://github.com/allenjr](https://github.com/AllenDevLabs)
